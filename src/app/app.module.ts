@@ -15,6 +15,8 @@ import { MatListModule } from '@angular/material/list';
 import { HomeComponent } from './pages/home/home.component';
 import { NavComponent } from './shared/components/nav/nav.component';
 import { HttpClientModule } from '@angular/common/http';
+import { MatFormFieldModule, MatInputModule } from '@angular/material';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -29,12 +31,15 @@ import { HttpClientModule } from '@angular/common/http';
         HttpClientModule,
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
         BrowserAnimationsModule,
+        FormsModule,
         LayoutModule,
         MatToolbarModule,
         MatButtonModule,
         MatSidenavModule,
         MatIconModule,
-        MatListModule
+        MatListModule,
+        MatFormFieldModule,
+        MatInputModule
     ],
     providers: [],
     bootstrap: [AppComponent]
