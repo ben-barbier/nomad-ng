@@ -19,3 +19,13 @@
 .spacer {
     flex: 1 1 auto;
 }
+
+.title {
+    display: flex;
+    align-items: center;
+
+    img {
+        height: 40px;
+        margin-right: 10px;
+    }
+}
