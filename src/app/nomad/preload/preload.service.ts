@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
+import { delay, finalize, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { PreloadDialogComponent } from './preload-dialog/preload-dialog.component';
 
 export interface PreloadItem {
-    data: Observable<any>;
-    saveAction: (data: any) => void;
+    cacheKey: string;
+    data$: Observable<any>;
+    storeData: (data: any) => void;
+    maxAge: number;
 }
 
 @Injectable({
@@ -24,19 +26,41 @@ export class PreloadService {
 
     public preload(preloadList: PreloadItem[]): Promise<any> {
 
-        this.progress$ = new BehaviorSubject<{ success: number, total: number }>({ success: 0, total: preloadList.length });
+        const { toLoad, notToLoad } = preloadList.reduce((acc, preloadItem) => {
+            const cachedItemStr = localStorage.getItem(preloadItem.cacheKey);
+            if (!cachedItemStr) {
+                return {...acc, toLoad: [...acc.toLoad, preloadItem]};
+            }
+            const cachedItem = JSON.parse(cachedItemStr);
+            if (cachedItem.expirationDate <= new Date().getTime()) {
+                return {...acc, toLoad: [...acc.toLoad, preloadItem]};
+            }
+            return {...acc, notToLoad: [...acc.notToLoad, preloadItem]};
+        }, { toLoad: [], notToLoad: [] });
+
+        notToLoad.forEach(item => item.storeData(JSON.parse(localStorage.getItem(item.cacheKey)).data));
+
+        if (toLoad.length === 0) {
+            return Promise.resolve();
+        }
+
+        this.progress$ = new BehaviorSubject<{ success: number, total: number }>({ success: 0, total: toLoad.length });
 
         const preloadDialog = this.dialog.open(PreloadDialogComponent, {
             disableClose: true,
             data: { progress$: this.progress$ },
         });
 
-        return forkJoin(preloadList.map(dataToPreload => dataToPreload.data.pipe(
-            tap(data => dataToPreload.saveAction(data)), // apply function
+        return forkJoin(toLoad.map(preloadItem => preloadItem.data$.pipe(
+            tap(data => preloadItem.storeData(data)),
+            tap(data => localStorage.setItem(preloadItem.cacheKey, JSON.stringify({
+                data,
+                expirationDate: new Date().getTime() + preloadItem.maxAge,
+            }))),
             tap(this.increaseProgress),
         ))).pipe(
             delay(150), // To display 100% value
-            tap(() => preloadDialog.close())
+            finalize(() => preloadDialog.close())
         ).toPromise();
 
     }

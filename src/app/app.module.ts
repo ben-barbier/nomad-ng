@@ -70,11 +70,21 @@ export function preload(
     store: StoreService,
     citiesService: CitiesService,
     customersService: CustomersService,
-) {
+): () => Promise<any> {
 
     const preloadList: PreloadItem[] = [
-        { data: citiesService.getAll(), saveAction: (cities) => store.cities$.next(cities) },
-        { data: customersService.getAll(), saveAction: (customers) => store.customers$.next(customers) },
+        {
+            cacheKey: 'cities',
+            data$: citiesService.getAll(),
+            storeData: (cities) => store.cities$.next(cities),
+            maxAge: 2 * 60 * 60 * 1000,
+        },
+        {
+            cacheKey: 'customers',
+            data$: customersService.getAll(),
+            storeData: (customers) => store.customers$.next(customers),
+            maxAge: 2 * 60 * 60 * 1000,
+        },
     ];
 
     return () => preloadService.preload(preloadList);
