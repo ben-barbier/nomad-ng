@@ -3,6 +3,7 @@ import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { delay, finalize, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { PreloadDialogComponent } from './preload-dialog/preload-dialog.component';
+import { ConnectionService } from './connection.service';
 
 export interface PreloadItem {
     cacheKey: string;
@@ -22,36 +23,59 @@ export class PreloadService {
 
     constructor(
         private dialog: MatDialog,
+        private connectionService: ConnectionService
     ) { }
 
     public preload(preloadList: PreloadItem[]): Promise<any> {
 
-        const { toLoad, notToLoad } = preloadList.reduce((acc, preloadItem) => {
-            const cachedItemStr = localStorage.getItem(preloadItem.cacheKey);
-            if (!cachedItemStr) {
-                return {...acc, toLoad: [...acc.toLoad, preloadItem]};
-            }
-            const cachedItem = JSON.parse(cachedItemStr);
-            if (cachedItem.expirationDate <= new Date().getTime()) {
-                return {...acc, toLoad: [...acc.toLoad, preloadItem]};
-            }
-            return {...acc, notToLoad: [...acc.notToLoad, preloadItem]};
-        }, { toLoad: [], notToLoad: [] });
+        const { toLoadFromNetwork, toLoadFromCache } = this.getPreloadOrigins(preloadList);
 
-        notToLoad.forEach(item => item.storeData(JSON.parse(localStorage.getItem(item.cacheKey)).data));
+        const isOffline = this.connectionService.isOnline$.getValue() === false;
 
-        if (toLoad.length === 0) {
+        if (isOffline) {
+            const preloadListContainsUncachedItem = preloadList.some(preloadItem => localStorage.getItem(preloadItem.cacheKey) === null);
+            if (preloadListContainsUncachedItem) {
+                return Promise.reject('Preload list contains uncached item and device is offline.');
+            }
+            preloadList.forEach(preloadItem => preloadItem.storeData(JSON.parse(localStorage.getItem(preloadItem.cacheKey)).data));
+        } else {
+            toLoadFromCache.forEach(item => item.storeData(JSON.parse(localStorage.getItem(item.cacheKey)).data));
+        }
+
+        if (toLoadFromNetwork.length > 0) {
+            return this.loadFromNetworkAndDisplayProgressDialog(toLoadFromNetwork);
+        } else {
             return Promise.resolve();
         }
 
-        this.progress$ = new BehaviorSubject<{ success: number, total: number }>({ success: 0, total: toLoad.length });
+    }
+
+    private getPreloadOrigins(preloadList: PreloadItem[]): { toLoadFromNetwork: PreloadItem[], toLoadFromCache: PreloadItem[] } {
+
+        return preloadList.reduce((acc, preloadItem) => {
+            const cachedItemStr = localStorage.getItem(preloadItem.cacheKey);
+            if (!cachedItemStr) {
+                return { ...acc, toLoadFromNetwork: [...acc.toLoadFromNetwork, preloadItem] };
+            }
+            const cachedItem = JSON.parse(cachedItemStr);
+            if (cachedItem.expirationDate <= new Date().getTime()) {
+                return { ...acc, toLoadFromNetwork: [...acc.toLoadFromNetwork, preloadItem] };
+            }
+            return { ...acc, toLoadFromCache: [...acc.toLoadFromCache, preloadItem] };
+        }, { toLoadFromNetwork: [], toLoadFromCache: [] });
+
+    }
+
+    private loadFromNetworkAndDisplayProgressDialog(toLoadFromNetwork: any[]): Promise<any> {
+
+        this.progress$ = new BehaviorSubject<{ success: number, total: number }>({ success: 0, total: toLoadFromNetwork.length });
 
         const preloadDialog = this.dialog.open(PreloadDialogComponent, {
             disableClose: true,
             data: { progress$: this.progress$ },
         });
 
-        return forkJoin(toLoad.map(preloadItem => preloadItem.data$.pipe(
+        return forkJoin(toLoadFromNetwork.map(preloadItem => preloadItem.data$.pipe(
             tap(data => preloadItem.storeData(data)),
             tap(data => localStorage.setItem(preloadItem.cacheKey, JSON.stringify({
                 data,
