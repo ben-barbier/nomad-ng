@@ -87,6 +87,6 @@ export function preload(
         },
     ];
 
-    return () => preloadService.preload(preloadList).catch(err => alert(err));
+    return () => preloadService.preload(preloadList, { retry: 2 }).catch(err => alert(err));
 
 }
