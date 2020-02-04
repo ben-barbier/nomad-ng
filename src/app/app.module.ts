@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -15,15 +14,24 @@ import { MatListModule } from '@angular/material/list';
 import { HomeComponent } from './pages/home/home.component';
 import { NavComponent } from './shared/components/nav/nav.component';
 import { HttpClientModule } from '@angular/common/http';
-import { MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { PreloadItem, PreloadService } from './nomad/preload/preload.service';
+import { PreloadDialogComponent } from './nomad/preload/preload-dialog/preload-dialog.component';
+import { MatProgressBarModule } from '@angular/material';
+import { CitiesService } from './shared/services/cities.service';
+import { CustomersService } from './shared/services/customers.service';
+import { StoreService } from './shared/services/store.service';
 
 @NgModule({
     declarations: [
         AppComponent,
         NavComponent,
         HomeComponent,
-        NavComponent
+        NavComponent,
+        PreloadDialogComponent,
     ],
     imports: [
         BrowserModule,
@@ -39,10 +47,35 @@ import { FormsModule } from '@angular/forms';
         MatIconModule,
         MatListModule,
         MatFormFieldModule,
-        MatInputModule
+        MatInputModule,
+        MatDialogModule,
+        MatProgressBarModule,
     ],
-    providers: [],
-    bootstrap: [AppComponent]
+    providers: [{
+        provide: APP_INITIALIZER,
+        useFactory: preload,
+        deps: [PreloadService, StoreService, CitiesService, CustomersService],
+        multi: true
+    }],
+    bootstrap: [AppComponent],
+    entryComponents: [
+        PreloadDialogComponent,
+    ]
 })
 export class AppModule {
+}
+
+export function preload(
+    preloadService: PreloadService,
+    store: StoreService,
+    citiesService: CitiesService,
+    customersService: CustomersService,
+) {
+
+    const preloadList: PreloadItem[] = [
+        { data: citiesService.getAll(), saveAction: (cities) => store.cities$.next(cities) },
+        { data: customersService.getAll(), saveAction: (customers) => store.customers$.next(customers) },
+    ];
+
+    return () => preloadService.preload(preloadList);
 }

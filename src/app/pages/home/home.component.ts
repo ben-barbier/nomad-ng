@@ -4,6 +4,7 @@ import { CitiesService } from '../../shared/services/cities.service';
 import { OrdersService } from '../../shared/services/orders.service';
 import { Customer } from '../../shared/models/customer.model';
 import { City } from '../../shared/models/city.model';
+import { StoreService } from '../../shared/services/store.service';
 
 @Component({
     selector: 'app-home',
@@ -19,9 +20,10 @@ export class HomeComponent {
     constructor(private customersService: CustomersService,
                 private citiesService: CitiesService,
                 private ordersService: OrdersService,
+                private store: StoreService,
     ) {
-        this.customersService.getAll().subscribe(customers => this.customers = customers);
-        this.citiesService.getAll().subscribe(cities => this.cities = cities);
+        this.store.customers$.subscribe(customers => this.customers = customers);
+        this.store.cities$.subscribe(cities => this.cities = cities);
     }
 
     public updateCustomer(customer: Customer) {
