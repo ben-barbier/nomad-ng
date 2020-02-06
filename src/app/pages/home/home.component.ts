@@ -26,34 +26,12 @@ export class HomeComponent {
         this.store.cities$.subscribe(cities => this.cities = cities);
     }
 
-    public updateCustomer(customer: Customer) {
-        this.customersService.update(customer).subscribe(() => {
-            this.customers = this.customers
-                .filter(c => c.id !== customer.id)
-                .concat(customer)
-                .sort((c1, c2) => c1.id - c2.id);
-        });
-    }
-
     public deleteCustomer(customer: Customer) {
-        this.customersService.delete(customer).subscribe(() => {
-            this.customers = this.customers.filter(c => c.id !== customer.id);
-        });
-    }
-
-    public updateCity(city: City) {
-        this.citiesService.update(city).subscribe(() => {
-            this.cities = this.cities
-                .filter(c => c.id !== city.id)
-                .concat(city)
-                .sort((c1, c2) => c1.id - c2.id);
-        });
+        this.customers = this.customers.filter(c => c.id !== customer.id);
     }
 
     public deleteCity(city: City) {
-        this.citiesService.delete(city).subscribe(() => {
-            this.cities = this.cities.filter(c => c.id !== city.id);
-        });
+        this.cities = this.cities.filter(c => c.id !== city.id);
     }
 
 }

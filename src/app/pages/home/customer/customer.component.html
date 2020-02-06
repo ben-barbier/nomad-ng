@@ -1,0 +1,11 @@
+{{customer.id}}
+<mat-form-field>
+    <input matInput [(ngModel)]="customer.name" placeholder="Name" [disabled]="isPending">
+</mat-form-field>
+<button mat-mini-fab color="primary" (click)="updateCustomer()" [disabled]="isPending">
+    <mat-icon>save</mat-icon>
+</button>
+<button mat-mini-fab color="warn" (click)="deleteCustomer()" [disabled]="isPending">
+    <mat-icon>delete</mat-icon>
+</button>
+<mat-spinner [diameter]="36" *ngIf="isPending"></mat-spinner>

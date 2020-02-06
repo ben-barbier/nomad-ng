@@ -20,10 +20,12 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { PreloadItem, PreloadService } from './nomad/preload/preload.service';
 import { PreloadDialogComponent } from './nomad/preload/preload-dialog/preload-dialog.component';
-import { MatProgressBarModule } from '@angular/material';
+import { MatProgressBarModule, MatProgressSpinnerModule } from '@angular/material';
 import { CitiesService } from './shared/services/cities.service';
 import { CustomersService } from './shared/services/customers.service';
 import { StoreService } from './shared/services/store.service';
+import { CityComponent } from './pages/home/city/city.component';
+import { CustomerComponent } from './pages/home/customer/customer.component';
 
 @NgModule({
     declarations: [
@@ -32,6 +34,8 @@ import { StoreService } from './shared/services/store.service';
         HomeComponent,
         NavComponent,
         PreloadDialogComponent,
+        CityComponent,
+        CustomerComponent,
     ],
     imports: [
         BrowserModule,
@@ -50,6 +54,7 @@ import { StoreService } from './shared/services/store.service';
         MatInputModule,
         MatDialogModule,
         MatProgressBarModule,
+        MatProgressSpinnerModule,
     ],
     providers: [{
         provide: APP_INITIALIZER,
