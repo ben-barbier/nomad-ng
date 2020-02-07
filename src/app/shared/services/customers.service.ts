@@ -17,11 +17,21 @@ export class CustomersService {
     ) { }
 
     public getAll(): Observable<Customer[]> {
-        return this.http.get<Customer[]>(`${environment.apiUrl}/customers`);
+        return this.http.get<Customer[]>(`${environment.apiUrl}/customers`).pipe(
+            catchError(err => {
+                this.notificationService.error(`Unable to get customers.`);
+                return throwError(err);
+            }),
+        );
     }
 
     public get(id: number): Observable<Customer> {
-        return this.http.get<Customer>(`${environment.apiUrl}/customers/${id}`);
+        return this.http.get<Customer>(`${environment.apiUrl}/customers/${id}`).pipe(
+            catchError(err => {
+                this.notificationService.error(`Unable to get customer ${id}.`);
+                return throwError(err);
+            }),
+        );
     }
 
     public add(customer: Customer): Observable<Customer> {
@@ -30,7 +40,7 @@ export class CustomersService {
             catchError(err => {
                 this.notificationService.error(`Unable to add customer ${customer.name}.`);
                 return throwError(err);
-            })
+            }),
         );
     }
 
@@ -40,7 +50,7 @@ export class CustomersService {
             catchError(err => {
                 this.notificationService.error(`Unable to update customer ${customer.name}.`);
                 return throwError(err);
-            })
+            }),
         );
     }
 
@@ -50,7 +60,7 @@ export class CustomersService {
             catchError(err => {
                 this.notificationService.error(`Unable to delete customer ${customer.name}.`);
                 return throwError(err);
-            })
+            }),
         );
     }
 

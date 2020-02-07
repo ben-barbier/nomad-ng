@@ -17,11 +17,21 @@ export class CitiesService {
     ) { }
 
     public getAll(): Observable<City[]> {
-        return this.http.get<City[]>(`${environment.apiUrl}/cities`);
+        return this.http.get<City[]>(`${environment.apiUrl}/cities`).pipe(
+            catchError(err => {
+                this.notificationService.error(`Unable to get cities.`);
+                return throwError(err);
+            }),
+        );
     }
 
     public get(id: number): Observable<City> {
-        return this.http.get<City>(`${environment.apiUrl}/cities/${id}`);
+        return this.http.get<City>(`${environment.apiUrl}/cities/${id}`).pipe(
+            catchError(err => {
+                this.notificationService.error(`Unable to get city ${id}.`);
+                return throwError(err);
+            }),
+        );
     }
 
     public add(city: City): Observable<City> {
@@ -30,7 +40,7 @@ export class CitiesService {
             catchError(err => {
                 this.notificationService.error(`Unable to add city ${city.name}.`);
                 return throwError(err);
-            })
+            }),
         );
     }
 
@@ -40,7 +50,7 @@ export class CitiesService {
             catchError(err => {
                 this.notificationService.error(`Unable to update city ${city.name}.`);
                 return throwError(err);
-            })
+            }),
         );
     }
 
@@ -50,7 +60,7 @@ export class CitiesService {
             catchError(err => {
                 this.notificationService.error(`Unable to delete city ${city.name}.`);
                 return throwError(err);
-            })
+            }),
         );
     }
 
