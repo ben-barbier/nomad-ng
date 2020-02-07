@@ -5,6 +5,7 @@ import { OrdersService } from '../../shared/services/orders.service';
 import { Customer } from '../../shared/models/customer.model';
 import { City } from '../../shared/models/city.model';
 import { StoreService } from '../../shared/services/store.service';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-home',
@@ -22,8 +23,12 @@ export class HomeComponent {
                 private ordersService: OrdersService,
                 private store: StoreService,
     ) {
-        this.store.customers$.subscribe(customers => this.customers = customers);
-        this.store.cities$.subscribe(cities => this.cities = cities);
+        this.store.customers$.pipe(
+            map(customers => customers.sort((a, b) => a.id - b.id)),
+        ).subscribe(customers => this.customers = customers);
+        this.store.cities$.pipe(
+            map(cities => cities.sort((a, b) => a.id - b.id)),
+        ).subscribe(cities => this.cities = cities);
     }
 
     public deleteCustomer(customer: Customer) {
