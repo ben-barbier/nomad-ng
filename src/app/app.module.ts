@@ -20,7 +20,9 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { PreloadItem, PreloadService } from './nomad/preload/preload.service';
 import { PreloadDialogComponent } from './nomad/preload/preload-dialog/preload-dialog.component';
-import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatProgressBarModule, MatProgressSpinnerModule, MatSnackBarModule } from '@angular/material';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { CitiesService } from './shared/services/cities.service';
 import { CustomersService } from './shared/services/customers.service';
 import { StoreService } from './shared/services/store.service';
@@ -99,6 +101,6 @@ export function preload(
         },
     ];
 
-    return () => preloadService.preload(preloadList, { retry: 2 }).catch(err => alert(err));
+    return () => preloadService.preload(preloadList, { retry: 2 }).catch(err => alert(err.message || err));
 
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { delay, finalize, retry, tap } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { PreloadDialogComponent } from './preload-dialog/preload-dialog.component';
 import { ConnectionService } from './connection.service';
 import { CacheService } from './cache.service';
