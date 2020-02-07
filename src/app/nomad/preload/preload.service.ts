@@ -4,6 +4,7 @@ import { delay, finalize, retry, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { PreloadDialogComponent } from './preload-dialog/preload-dialog.component';
 import { ConnectionService } from './connection.service';
+import { CacheService } from './cache.service';
 
 export interface PreloadItem {
     cacheKey: string;
@@ -25,7 +26,8 @@ export class PreloadService {
 
     constructor(
         private dialog: MatDialog,
-        private connectionService: ConnectionService
+        private connectionService: ConnectionService,
+        private cacheService: CacheService,
     ) { }
 
     public preload(preloadList: PreloadItem[], preloadConfig?: PreloadConfig): Promise<any> {
@@ -37,13 +39,13 @@ export class PreloadService {
         const isOffline = this.connectionService.isOnline$.getValue() === false;
 
         if (isOffline) {
-            const preloadListContainsUncachedItem = preloadList.some(preloadItem => localStorage.getItem(preloadItem.cacheKey) === null);
+            const preloadListContainsUncachedItem = preloadList.some(item => !this.cacheService.isInCache(item.cacheKey));
             if (preloadListContainsUncachedItem) {
                 return Promise.reject('Preload list contains uncached item and device is offline.');
             }
-            preloadList.forEach(preloadItem => preloadItem.storeData(JSON.parse(localStorage.getItem(preloadItem.cacheKey)).data));
+            preloadList.forEach(item => item.storeData(this.cacheService.getItem(item.cacheKey)));
         } else {
-            toLoadFromCache.forEach(item => item.storeData(JSON.parse(localStorage.getItem(item.cacheKey)).data));
+            toLoadFromCache.forEach(item => item.storeData(this.cacheService.getItem(item.cacheKey)));
         }
 
         if (toLoadFromNetwork.length > 0) {
@@ -57,15 +59,13 @@ export class PreloadService {
     private getPreloadOrigins(preloadList: PreloadItem[]): { toLoadFromNetwork: PreloadItem[], toLoadFromCache: PreloadItem[] } {
 
         return preloadList.reduce((acc, preloadItem) => {
-            const cachedItemStr = localStorage.getItem(preloadItem.cacheKey);
-            if (!cachedItemStr) {
+            if (!this.cacheService.isInCache(preloadItem.cacheKey)) {
                 return { ...acc, toLoadFromNetwork: [...acc.toLoadFromNetwork, preloadItem] };
-            }
-            const cachedItem = JSON.parse(cachedItemStr);
-            if (cachedItem.expirationDate <= new Date().getTime()) {
+            } else if (!this.cacheService.isValid(preloadItem.cacheKey)) {
                 return { ...acc, toLoadFromNetwork: [...acc.toLoadFromNetwork, preloadItem] };
+            } else {
+                return { ...acc, toLoadFromCache: [...acc.toLoadFromCache, preloadItem] };
             }
-            return { ...acc, toLoadFromCache: [...acc.toLoadFromCache, preloadItem] };
         }, { toLoadFromNetwork: [], toLoadFromCache: [] });
 
     }
@@ -82,10 +82,7 @@ export class PreloadService {
         return forkJoin(toLoadFromNetwork.map(preloadItem => preloadItem.data$.pipe(
             retry(config.retry),
             tap(data => preloadItem.storeData(data)),
-            tap(data => localStorage.setItem(preloadItem.cacheKey, JSON.stringify({
-                data,
-                expirationDate: new Date().getTime() + preloadItem.maxAge,
-            }))),
+            tap(data => this.cacheService.setItem(preloadItem.cacheKey, data, preloadItem.maxAge)),
             tap(() => this.increaseProgress(progress$)),
         ))).pipe(
             delay(150), // To display 100% value
