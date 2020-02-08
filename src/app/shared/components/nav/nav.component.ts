@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { ConnectionService } from '../../../nomad/preload/connection.service';
 
 @Component({
     selector: 'app-nav',
@@ -11,15 +10,11 @@ import { ConnectionService } from '../../../nomad/preload/connection.service';
 })
 export class NavComponent {
 
-    public isOnline$ = this.connectionService.isOnline$;
-
     public isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
         map(result => result.matches),
         shareReplay(),
     );
 
-    constructor(private breakpointObserver: BreakpointObserver,
-                private connectionService: ConnectionService) {
-    }
+    constructor(private breakpointObserver: BreakpointObserver) { }
 
 }

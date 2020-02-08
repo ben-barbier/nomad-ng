@@ -20,12 +20,7 @@
             </button>
             <span class="title"><img src="assets/logo.png" alt=""> nomad-ng</span>
             <span class="spacer"></span>
-            <span>
-                <img
-                    style="color: white;"
-                    [alt]="(isOnline$ | async) ? 'online' : 'offline'"
-                    [src]="(isOnline$ | async) ? 'assets/icons/online.svg' : 'assets/icons/offline.svg'">
-            </span>
+            <app-offline-indicator></app-offline-indicator>
         </mat-toolbar>
         <router-outlet></router-outlet>
     </mat-sidenav-content>

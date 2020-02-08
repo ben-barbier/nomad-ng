@@ -28,6 +28,7 @@ import { CustomersService } from './shared/services/customers.service';
 import { StoreService } from './shared/services/store.service';
 import { CityComponent } from './pages/home/city/city.component';
 import { CustomerComponent } from './pages/home/customer/customer.component';
+import { OfflineIndicatorComponent } from './nomad/offline/offline-indicator/offline-indicator.component';
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { CustomerComponent } from './pages/home/customer/customer.component';
         PreloadDialogComponent,
         CityComponent,
         CustomerComponent,
+        OfflineIndicatorComponent,
     ],
     imports: [
         BrowserModule,
