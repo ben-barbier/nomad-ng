@@ -13,22 +13,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { HomeComponent } from './pages/home/home.component';
 import { NavComponent } from './shared/components/nav/nav.component';
-import { HttpClientModule } from '@angular/common/http';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { PreloadItem, PreloadService } from './nomad/preload/preload.service';
-import { PreloadDialogComponent } from './nomad/preload/preload-dialog/preload-dialog.component';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { CitiesService } from './shared/services/cities.service';
 import { CustomersService } from './shared/services/customers.service';
 import { StoreService } from './shared/services/store.service';
 import { CityComponent } from './pages/home/city/city.component';
 import { CustomerComponent } from './pages/home/customer/customer.component';
-import { OfflineIndicatorComponent } from './nomad/offline/offline-indicator/offline-indicator.component';
+import { NomadModule } from './nomad/nomad.module';
 
 @NgModule({
     declarations: [
@@ -36,10 +33,8 @@ import { OfflineIndicatorComponent } from './nomad/offline/offline-indicator/off
         NavComponent,
         HomeComponent,
         NavComponent,
-        PreloadDialogComponent,
         CityComponent,
         CustomerComponent,
-        OfflineIndicatorComponent,
     ],
     imports: [
         BrowserModule,
@@ -49,6 +44,7 @@ import { OfflineIndicatorComponent } from './nomad/offline/offline-indicator/off
         BrowserAnimationsModule,
         FormsModule,
         LayoutModule,
+        NomadModule,
         MatToolbarModule,
         MatButtonModule,
         MatSidenavModule,
@@ -56,8 +52,6 @@ import { OfflineIndicatorComponent } from './nomad/offline/offline-indicator/off
         MatListModule,
         MatFormFieldModule,
         MatInputModule,
-        MatDialogModule,
-        MatProgressBarModule,
         MatProgressSpinnerModule,
         MatSnackBarModule,
     ],
@@ -66,17 +60,14 @@ import { OfflineIndicatorComponent } from './nomad/offline/offline-indicator/off
             provide: APP_INITIALIZER,
             useFactory: preload,
             deps: [PreloadService, StoreService, CitiesService, CustomersService],
-            multi: true
+            multi: true,
         },
         {
             provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-            useValue: { duration: 2500 }
+            useValue: { duration: 2500 },
         },
     ],
     bootstrap: [AppComponent],
-    entryComponents: [
-        PreloadDialogComponent,
-    ]
 })
 export class AppModule {
 }
