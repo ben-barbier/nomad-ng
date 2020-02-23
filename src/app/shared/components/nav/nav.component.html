@@ -20,6 +20,7 @@
             </button>
             <span class="title"><img src="assets/logo.png" alt=""> nomad-ng</span>
             <span class="spacer"></span>
+            <span><mat-slide-toggle (change)="toggleConnection()"></mat-slide-toggle></span>
             <app-offline-indicator></app-offline-indicator>
         </mat-toolbar>
         <router-outlet></router-outlet>

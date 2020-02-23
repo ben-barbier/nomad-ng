@@ -26,6 +26,7 @@ import { StoreService } from './shared/services/store.service';
 import { CityComponent } from './pages/home/city/city.component';
 import { CustomerComponent } from './pages/home/customer/customer.component';
 import { NomadModule } from './nomad/nomad.module';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
     declarations: [
@@ -54,6 +55,7 @@ import { NomadModule } from './nomad/nomad.module';
         MatInputModule,
         MatProgressSpinnerModule,
         MatSnackBarModule,
+        MatSlideToggleModule,
     ],
     providers: [
         {
