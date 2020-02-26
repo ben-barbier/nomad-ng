@@ -1,8 +1,8 @@
 {{ city.id }}
 <mat-form-field>
-    <input matInput [(ngModel)]="city.name" placeholder="Name" [disabled]="isPending">
+    <input matInput [(ngModel)]="city.name" placeholder="Name" [disabled]="isPending" (ngModelChange)="change()">
 </mat-form-field>
-<button mat-mini-fab color="primary" (click)="updateCity()" [disabled]="isPending">
+<button mat-mini-fab color="primary" (click)="updateCity()" [disabled]="isPending || isPristine">
     <mat-icon>save</mat-icon>
 </button>
 <button mat-mini-fab color="warn" (click)="deleteCity()" [disabled]="isPending">

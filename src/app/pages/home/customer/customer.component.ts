@@ -15,6 +15,7 @@ export class CustomerComponent {
     @Output() public deleted = new EventEmitter<void>();
 
     public isPending = false;
+    public isPristine = true;
 
     constructor(
         private customersService: CustomersService,
@@ -25,6 +26,7 @@ export class CustomerComponent {
         this.isPending = true;
         this.customersService.update(this.customer).pipe(
             tap(() => this.cacheService.partialUpdateById('customers', this.customer, this.customer.id)),
+            tap(() => this.isPristine = true),
             finalize(() => this.isPending = false),
         ).subscribe();
     }
@@ -36,6 +38,10 @@ export class CustomerComponent {
             tap(() => this.deleted.emit()),
             finalize(() => this.isPending = false),
         ).subscribe();
+    }
+
+    public change() {
+        this.isPristine = false;
     }
 
 }

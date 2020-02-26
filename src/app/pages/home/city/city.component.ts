@@ -15,6 +15,7 @@ export class CityComponent {
     @Output() public deleted = new EventEmitter<void>();
 
     public isPending = false;
+    public isPristine = true;
 
     constructor(
         private citiesService: CitiesService,
@@ -25,6 +26,7 @@ export class CityComponent {
         this.isPending = true;
         this.citiesService.update(this.city).pipe(
             tap(() => this.cacheService.partialUpdateById('cities', this.city, this.city.id)),
+            tap(() => this.isPristine = true),
             finalize(() => this.isPending = false),
         ).subscribe();
     }
@@ -36,6 +38,10 @@ export class CityComponent {
             tap(() => this.deleted.emit()),
             finalize(() => this.isPending = false),
         ).subscribe();
+    }
+
+    public change() {
+        this.isPristine = false;
     }
 
 }

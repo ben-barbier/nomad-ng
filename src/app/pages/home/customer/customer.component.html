@@ -1,8 +1,8 @@
 {{customer.id}}
 <mat-form-field>
-    <input matInput [(ngModel)]="customer.name" placeholder="Name" [disabled]="isPending">
+    <input matInput [(ngModel)]="customer.name" placeholder="Name" [disabled]="isPending" (ngModelChange)="change()">
 </mat-form-field>
-<button mat-mini-fab color="primary" (click)="updateCustomer()" [disabled]="isPending">
+<button mat-mini-fab color="primary" (click)="updateCustomer()" [disabled]="isPending || isPristine">
     <mat-icon>save</mat-icon>
 </button>
 <button mat-mini-fab color="warn" (click)="deleteCustomer()" [disabled]="isPending">
