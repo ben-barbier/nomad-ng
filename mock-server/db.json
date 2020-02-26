@@ -1,70 +1,70 @@
 {
-    "customers": [
-        {
-            "id": 1,
-            "name": "Joe",
-            "cityId": 1
-        },
-        {
-            "id": 2,
-            "name": "William",
-            "cityId": 2
-        },
-        {
-            "id": 3,
-            "name": "Jack",
-            "cityId": 3
-        },
-        {
-            "id": 4,
-            "name": "Averell",
-            "cityId": 2
-        }
-    ],
-    "cities": [
-        {
-            "id": 1,
-            "name": "New York"
-        },
-        {
-            "id": 2,
-            "name": "Chicago"
-        },
-        {
-            "id": 3,
-            "name": "Boston"
-        }
-    ],
-    "orders": [
-        {
-            "id": 1,
-            "label": "Order 1",
-            "customerId": 1
-        },
-        {
-            "id": 2,
-            "label": "Order 2",
-            "customerId": 2
-        },
-        {
-            "id": 3,
-            "label": "Order 3",
-            "customerId": 2
-        },
-        {
-            "id": 4,
-            "label": "Order 4",
-            "customerId": 3
-        },
-        {
-            "id": 5,
-            "label": "Order 5",
-            "customerId": 3
-        },
-        {
-            "id": 6,
-            "label": "Order 6",
-            "customerId": 3
-        }
-    ]
+  "customers": [
+    {
+      "id": 1,
+      "name": "Joe",
+      "cityId": 1
+    },
+    {
+      "id": 2,
+      "name": "William",
+      "cityId": 2
+    },
+    {
+      "id": 3,
+      "name": "Jack",
+      "cityId": 3
+    },
+    {
+      "id": 4,
+      "name": "Averell",
+      "cityId": 2
+    }
+  ],
+  "cities": [
+    {
+      "id": 1,
+      "name": "New York"
+    },
+    {
+      "id": 2,
+      "name": "Chicago"
+    },
+    {
+      "id": 3,
+      "name": "Boston"
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "label": "Order 1",
+      "customerId": 1
+    },
+    {
+      "id": 2,
+      "label": "Order 2",
+      "customerId": 2
+    },
+    {
+      "id": 3,
+      "label": "Order 3",
+      "customerId": 2
+    },
+    {
+      "id": 4,
+      "label": "Order 4",
+      "customerId": 3
+    },
+    {
+      "id": 5,
+      "label": "Order 5",
+      "customerId": 3
+    },
+    {
+      "id": 6,
+      "label": "Order 6",
+      "customerId": 3
+    }
+  ]
 }
