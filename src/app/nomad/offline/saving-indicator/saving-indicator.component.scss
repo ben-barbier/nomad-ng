@@ -1,0 +1,13 @@
+.saving-indicator > div {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+mat-icon {
+    width: 30px;
+}
+
+.action {
+    cursor: pointer;
+}

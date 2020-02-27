@@ -15,7 +15,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { NavComponent } from './shared/components/nav/nav.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { PreloadItem, PreloadService } from './nomad/preload/preload.service';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -26,7 +26,9 @@ import { StoreService } from './shared/services/store.service';
 import { CityComponent } from './pages/home/city/city.component';
 import { CustomerComponent } from './pages/home/customer/customer.component';
 import { NomadModule } from './nomad/nomad.module';
+import { NOMAD_OPTIONS } from './nomad/nomad.options';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { OfflineInterceptor } from './nomad/offline/offline.interceptor';
 
 @NgModule({
     declarations: [
@@ -65,9 +67,20 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
             multi: true,
         },
         {
+            provide: HTTP_INTERCEPTORS,
+            useClass: OfflineInterceptor,
+            multi: true,
+        },
+        {
             provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
             useValue: { duration: 2500 },
         },
+        {
+            provide: NOMAD_OPTIONS,
+            useValue: {
+                offlineIgnoredPaths: [], // 🚀: Complete 'offlineIgnoredPaths' with your own ignored URLs
+            },
+        }
     ],
     bootstrap: [AppComponent],
 })
@@ -81,6 +94,7 @@ export function preload(
     customersService: CustomersService,
 ): () => Promise<any> {
 
+    // 🚀: Complete 'preloadList' with your own preload data
     const preloadList: PreloadItem[] = [
         {
             cacheKey: 'cities',

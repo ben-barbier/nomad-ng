@@ -1,15 +1,19 @@
 import { NgModule } from '@angular/core';
 import { PreloadDialogComponent } from './preload/preload-dialog/preload-dialog.component';
+import { SavingIndicatorComponent } from './offline/saving-indicator/saving-indicator.component';
 import { OfflineIndicatorComponent } from './offline/offline-indicator/offline-indicator.component';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
+// TODO: add forRoot config for NomadModule
 @NgModule({
     declarations: [
         PreloadDialogComponent,
+        SavingIndicatorComponent,
         OfflineIndicatorComponent,
     ],
     imports: [
@@ -18,9 +22,12 @@ import { MatDialogModule } from '@angular/material/dialog';
         MatProgressSpinnerModule,
         MatProgressBarModule,
         MatDialogModule,
+        MatTooltipModule,
     ],
     exports: [
         OfflineIndicatorComponent,
+        SavingIndicatorComponent,
     ],
+    providers: [],
 })
 export class NomadModule {}

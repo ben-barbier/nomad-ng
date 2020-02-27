@@ -1,0 +1,14 @@
+<div class="saving-indicator" [ngSwitch]="savingStatus">
+    <div class="saving" *ngSwitchCase="SavingStatusEnum.SAVING" [@appearAnimation]>
+        <mat-icon>save</mat-icon>
+        <mat-spinner color="accent" diameter="30"></mat-spinner>
+    </div>
+    <div class="success" *ngSwitchCase="SavingStatusEnum.SUCCESS" [@appearAnimation]>
+        <mat-icon>save</mat-icon>
+        <mat-icon>check_circle_outline</mat-icon>
+    </div>
+    <div class="fail" *ngSwitchCase="SavingStatusEnum.FAILED" [@appearAnimation]>
+        <mat-icon>save</mat-icon>
+        <mat-icon class="action" color="warn" (click)="resume()" matTooltip="Resume sync">error_outline</mat-icon>
+    </div>
+</div>
