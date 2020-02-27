@@ -1,4 +1,2 @@
-<img
-    style="color: white;"
-    [alt]="(isOnline$ | async) ? 'online' : 'offline'"
-    [src]="(isOnline$ | async) ? 'assets/icons/online.svg' : 'assets/icons/offline.svg'">
+<img [hidden]="(isOnline$ | async) === false" alt="online" src="assets/icons/online.svg">
+<img [hidden]="(isOnline$ | async) === true" alt="offline" src="assets/icons/offline.svg">
