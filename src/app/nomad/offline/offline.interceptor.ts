@@ -21,7 +21,6 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (this.offlineService.isPendingRequest(req)) {
             const clone = req.clone({ headers: req.headers.delete('fromOfflineService') });
             // TODO: manage header 'Authorization'
-            // TODO: add timestamp in offline header
             return next.handle(clone);
         }
 

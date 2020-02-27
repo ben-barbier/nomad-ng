@@ -48,6 +48,7 @@ export class OfflineService {
         const clone = req.clone({
             headers: req.headers
                 .append('fromOfflineService', 'true')
+                .append('X-Offline-Action-Date', new Date().toUTCString())
                 .delete('Authorization'),
             body: { ...req.body }, // 💡: clone() do not create a new reference of body.
         });
