@@ -9,7 +9,9 @@ const MAX_LATENCY_IN_MS = 3000;
 const ERROR_PROBABILITY = 0;
 
 module.exports = (req, res, next) => setTimeout(() => {
-  if (Math.random() < ERROR_PROBABILITY) {
+  if (!req.header('Authorization')) {
+    res.status(401).send("Unauthorized");
+  } else if (Math.random() < ERROR_PROBABILITY) {
     res.status(500).send("Error");
   } else {
     next();
