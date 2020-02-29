@@ -29,6 +29,7 @@ export class OfflineService {
             map(([requestQueue]): HttpRequest<any> => requestQueue[0]),
             concatMap(request => this.sendRequest<any>(request).pipe(
                 catchError(err => {
+                    // TODO: indiquer l'erreur de synchro à l'utilisateur
                     this.savingIndicatorService.savingStatus.next(SavingStatusEnum.FAILED);
                     return throwError(err);
                 }),

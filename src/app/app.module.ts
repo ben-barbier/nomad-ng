@@ -28,7 +28,9 @@ import { CustomerComponent } from './pages/home/customer/customer.component';
 import { NomadModule } from './nomad/nomad.module';
 import { NOMAD_OPTIONS } from './nomad/nomad.options';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { OfflineInterceptor } from './nomad/offline/offline.interceptor';
+import { LoginComponent } from './pages/login/login.component';
+import { LogoutComponent } from './shared/components/login-status/logout.component';
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 
 @NgModule({
     declarations: [
@@ -38,6 +40,8 @@ import { OfflineInterceptor } from './nomad/offline/offline.interceptor';
         NavComponent,
         CityComponent,
         CustomerComponent,
+        LoginComponent,
+        LogoutComponent,
     ],
     imports: [
         BrowserModule,
@@ -67,13 +71,19 @@ import { OfflineInterceptor } from './nomad/offline/offline.interceptor';
             multi: true,
         },
         {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+        },
+        {
             provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
             useValue: { duration: 2500 },
         },
         {
+            // 🚀: Complete 'NOMAD_OPTIONS' with your own configuration
             provide: NOMAD_OPTIONS,
             useValue: {
-                offlineIgnoredPaths: [], // 🚀: Complete 'offlineIgnoredPaths' with your own ignored URLs
+                offlineIgnoredPaths: [],
             },
         }
     ],
@@ -106,6 +116,10 @@ export function configPreload(
     ];
 
     preloadService.configPreload(preloadList);
-    return () => preloadService.preload({ retry: 2 }).catch(err => alert(err.message || err));
+
+    // 🚀: If your API do not need athentication, we can launch the preload directly here like this :
+    // return () => this.preloadService.preload({ retry: 2 }).catch(err => alert(err.message || err))
+    // 🚀: Instead, we need to return this function :
+    return () => Promise.resolve();
 
 }

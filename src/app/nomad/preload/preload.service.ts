@@ -31,7 +31,7 @@ export class PreloadService {
         private cacheService: CacheService,
     ) { }
 
-    public configPreload(preloadList: PreloadItem[]) {
+    public configPreload(preloadList: PreloadItem[]): void {
         this.preloadList = preloadList;
     }
 
