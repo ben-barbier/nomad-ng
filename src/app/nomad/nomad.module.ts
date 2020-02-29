@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { PreloadDialogComponent } from './preload/preload-dialog/preload-dialog.component';
 import { SavingIndicatorComponent } from './offline/saving-indicator/saving-indicator.component';
 import { OfflineIndicatorComponent } from './offline/offline-indicator/offline-indicator.component';
@@ -30,4 +30,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ],
     providers: [],
 })
-export class NomadModule {}
+export class NomadModule {
+    constructor(@Optional() @SkipSelf() parentModule?: NomadModule) {
+        if (parentModule) {
+            throw new Error('NomadModule is already loaded. Import it in the AppModule only.');
+        }
+    }
+}
