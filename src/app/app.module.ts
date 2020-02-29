@@ -62,7 +62,7 @@ import { OfflineInterceptor } from './nomad/offline/offline.interceptor';
     providers: [
         {
             provide: APP_INITIALIZER,
-            useFactory: preload,
+            useFactory: configPreload,
             deps: [PreloadService, StoreService, CitiesService, CustomersService],
             multi: true,
         },
@@ -82,7 +82,7 @@ import { OfflineInterceptor } from './nomad/offline/offline.interceptor';
 export class AppModule {
 }
 
-export function preload(
+export function configPreload(
     preloadService: PreloadService,
     store: StoreService,
     citiesService: CitiesService,
@@ -105,6 +105,7 @@ export function preload(
         },
     ];
 
-    return () => preloadService.preload(preloadList, { retry: 2 }).catch(err => alert(err.message || err));
+    preloadService.configPreload(preloadList);
+    return () => preloadService.preload({ retry: 2 }).catch(err => alert(err.message || err));
 
 }

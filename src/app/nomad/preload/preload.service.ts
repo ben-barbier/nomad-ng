@@ -23,6 +23,7 @@ export interface PreloadConfig {
 export class PreloadService {
 
     private DEFAULT_CONFIG = { retry: 0 };
+    private preloadList: PreloadItem[] = [];
 
     constructor(
         private dialog: MatDialog,
@@ -30,20 +31,24 @@ export class PreloadService {
         private cacheService: CacheService,
     ) { }
 
-    public preload(preloadList: PreloadItem[], preloadConfig?: PreloadConfig): Promise<any> {
+    public configPreload(preloadList: PreloadItem[]) {
+        this.preloadList = preloadList;
+    }
+
+    public preload(preloadConfig?: PreloadConfig): Promise<any> {
 
         const config = { ...this.DEFAULT_CONFIG, ...preloadConfig };
 
-        const { toLoadFromNetwork, toLoadFromCache } = this.getPreloadOrigins(preloadList);
+        const { toLoadFromNetwork, toLoadFromCache } = this.getPreloadOrigins(this.preloadList);
 
         const isOffline = this.connectionService.isOnline$.getValue() === false;
 
         if (isOffline) {
-            const preloadListContainsUncachedItem = preloadList.some(item => !this.cacheService.isInCache(item.cacheKey));
+            const preloadListContainsUncachedItem = this.preloadList.some(item => !this.cacheService.isInCache(item.cacheKey));
             if (preloadListContainsUncachedItem) {
                 return Promise.reject('Preload list contains uncached item and device is offline.');
             }
-            preloadList.forEach(item => item.storeData(this.cacheService.getItem(item.cacheKey)));
+            this.preloadList.forEach(item => item.storeData(this.cacheService.getItem(item.cacheKey)));
         } else {
             toLoadFromCache.forEach(item => item.storeData(this.cacheService.getItem(item.cacheKey)));
         }
