@@ -47,7 +47,7 @@ import { OfflineInterceptor } from './nomad/offline/offline.interceptor';
         BrowserAnimationsModule,
         FormsModule,
         LayoutModule,
-        NomadModule,
+        NomadModule.forRoot(),
         MatToolbarModule,
         MatButtonModule,
         MatSidenavModule,
@@ -64,11 +64,6 @@ import { OfflineInterceptor } from './nomad/offline/offline.interceptor';
             provide: APP_INITIALIZER,
             useFactory: preload,
             deps: [PreloadService, StoreService, CitiesService, CustomersService],
-            multi: true,
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: OfflineInterceptor,
             multi: true,
         },
         {
